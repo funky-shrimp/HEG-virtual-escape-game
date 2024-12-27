@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. Styles de base (body, etc.) */
+@layer base {
+  .font-montserrat {
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .bg-neutral {
+    background-color: #f9fafb; /* Utilisation de la couleur définie dans tailwind.config.js */
+  }
+
+  .text-text {
+    color: #111827; /* Utilisation de la couleur définie dans tailwind.config.js */
+  }
+
+  body {
+    @apply font-montserrat bg-neutral text-text;
+    /* 
+      - La font Montserrat provient de la config tailwind + import.
+      - Couleur de fond gris très clair (neutral).
+      - Couleur de texte gris très foncé (text).
+    */
+  }
+}
+
+/* 3. Composants (boutons, titres, etc.) */
+@layer components {
+  /* Boutons */
+  .btn {
+    @apply px-4 py-2 rounded-md font-semibold transition duration-200;
+  }
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-blue-900;
+  }
+  .btn-secondary {
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white;
+  }
+
+  /* Titres */
+  .title-1 {
+    @apply text-3xl font-bold tracking-wide mb-4;
+  }
+  .title-2 {
+    @apply text-2xl font-semibold mb-3;
+  }
+
+  /* Paragraphes */
+  .paragraph {
+    @apply text-base leading-6;
+  }
+}
