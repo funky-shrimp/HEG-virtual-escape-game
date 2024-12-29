@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "background": "/src/assets/rooms/img/room_1/view/room_1-photo_porte.jpg",
+  "areas" : [
+    {"name":"boite aux lettres",
+  "x":27,
+  "y":57,
+  "width":7,
+  "height":7},
+  {
+    "name":"porte",
+  "x":43,
+  "y":58,
+  "width":4,
+  "height":15
+  }
+  ]
+}
