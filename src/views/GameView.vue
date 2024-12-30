@@ -1,16 +1,24 @@
 <script>
 import ViewManager from "@/components/ViewManager.vue";
+import ItemWindow from "@/components/ItemWindow.vue";
 
 export default {
   components: {
     ViewManager,
+    ItemWindow,
   },
 
   data() {
     return {
       currentRoom: {},
       currentView: {},
+      selectedItem: null,
       inventory: [],
+    };
+  },
+  provide() {
+    return {
+      inventory: this.inventory,
     };
   },
 
@@ -27,29 +35,75 @@ export default {
           return response.json();
         })
         .then((data) => {
-          console.log(data);
           //Sauvegarde la Room
           this.currentRoom = data;
-          //Charge la vue
-          this.currentView = this.currentRoom;
+          //Charge la vue en effectuant un clone de la currentRoom
+          this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
         });
     },
 
+    /**
+     * Return the innerRoom of the area with the name matching the target id
+     * @param {HTMLElement} target - the element on which the user clicked
+     * @returns {Object} The inner room object
+     */
     isInnerRoom(target) {
-      const innerRoom = this.currentRoom.areas.find(
-        (area) => area.name === target.id
-      ).innerRoom;
+      //Clone la vue intérieur de la room
+      const innerRoom = JSON.parse(
+        JSON.stringify(
+          this.currentRoom.areas.find((area) => area.name === target.id)
+            .innerRoom
+        )
+      );
       return innerRoom;
     },
 
+    /**
+     * Return the item with the name matching the target id
+     * @param {HTMLElement} target - the element on which the user clicked
+     * @returns {Object} - the item object from the currentView.areas array
+     */
+    getItem(target) {
+      const item = this.currentView.areas.find(
+        (area) => area.name === target.id
+      );
+      return item;
+    },
+
+    /**
+     * Adds the selected item to the inventory if it's not already there.
+     * Removes the item from the current view, and updates the inventory
+     * list in the footer.
+     */
+    takeItem() {
+      //est mis dans l'inventaire si pas déjà présent
+      if (this.inventory.includes(this.selectedItem)) return;
+      this.inventory.push(this.selectedItem);
+
+      //est enlevé de la variable globale
+      this.selectedItem = null;
+
+      console.log("inventory", this.inventory);
+    },
+
+    /**
+     * Removes the selected item from the inventory if it's already there.
+     * Sets the selectedItem to null.
+     */
+    dropItem() {
+      if(this.inventory.includes(this.selectedItem)){
+        this.inventory.splice(this.inventory.indexOf(this.selectedItem), 1);
+        this.selectedItem = null;
+      }
+    },
+
     manageAreaClick(e) {
-      console.log(e.target);
       //Si clic sur une zone
       if (e.target.classList.contains("zone")) {
         //On regarde si c'est une zone pour sortir de la vue (class out)
         if (e.target.classList.contains("out")) {
-          this.currentView = this.currentRoom;
-        } 
+          this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
+        }
         //Sinon c'est une zone interne à la salle
         else {
           const view = this.isInnerRoom(e.target);
@@ -60,6 +114,7 @@ export default {
       }
       //Si clic sur un item
       else if (e.target.classList.contains("item")) {
+        this.selectedItem = this.getItem(e.target);
       }
     },
   },
@@ -78,31 +133,31 @@ export default {
 
   <main>
     <ViewManager :view="currentView" @press="manageAreaClick" />
-    <!--
-    <div id="room" v-if="currentRoom" @click="manageAreaClick">
-      <img ref="roomImage" :src="currentRoom.background" alt="background" />
-
-      <div
-        v-for="area in roomAreas"
-        :id="area.name"
-        class="area-overlay"
-        :class="area.class"
-        :style="{
-          position: 'absolute',
-          top: area.y + 'px',
-          left: area.x + 'px',
-          width: area.width + 'px',
-          height: area.height + 'px',
-        }"
-        @mouseover="highlightArea = true"
-        @mouseleave="highlightArea = false"
-      ></div>
-    </div>
-    -->
+    <ItemWindow
+      v-if="selectedItem != null"
+      :item="selectedItem"
+      @closeItem="selectedItem = null"
+      @take-item="takeItem"
+      @drop-item="dropItem"
+    />
   </main>
 
   <footer>
     <p>Inventaire</p>
+    <div class="inventory" v-if="inventory.length > 0">
+      <div
+        @click="selectedItem = item"
+        class="item"
+        v-for="item in inventory"
+        :key="item.name"
+        :style="{
+          backgroundImage: `url(${item.image})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'contain',
+          backgroundRepeat: 'no-repeat',
+        }"
+      ></div>
+    </div>
   </footer>
 </template>
 
@@ -154,42 +209,30 @@ footer {
   justify-content: center;
 }
 
+footer p {
+  position: absolute;
+}
+
+.inventory {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap:10px;
+}
+
+.inventory .item {
+  width: 100px;
+  height: 100%;
+  border: 1px solid white;
+}
+
 main {
   height: 75vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: black;
-}
-
-#view {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-#view img {
-  height: 100%;
-  object-fit: contain;
-  margin: auto;
-}
-
-/* Styles pour les zones simulées */
-.area-overlay {
-  background-color: transparent; /* Couleur de base transparente */
-  border: 1px solid transparent; /* Délimitation invisible au départ */
-  transition: background-color 0.3s, border-color 0.3s;
-}
-
-.area-overlay:hover {
-  cursor: pointer;
-}
-
-.area-overlay.zone:hover {
-  background-color: #00ff0d7a; /* Couleur vertes pour les zones */
-}
-
-.area-overlay.item:hover {
-  background-color: rgba(0, 0, 255, 0.5); /* Couleur bleue pour les items */
 }
 </style>

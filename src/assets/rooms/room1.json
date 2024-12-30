@@ -17,7 +17,10 @@
             "height": 100
           },
           {
-            "name": "instructions de jeu",
+            "name": "Consignes",
+            "description": "Cliquez sur le lien ci-dessous pour télécharger les consignes : ",
+            "image":"/src/assets/rooms/img/room_1/items/room_1-instructions_de_jeu.png",
+            "takeable":true,
             "class": "item",
             "x": 20,
             "y": 54,
@@ -25,7 +28,10 @@
             "height": 18
           },
           {
-            "name": "papier",
+            "name": "Énigme 1",
+            "image":"/src/assets/rooms/img/room_1/items/room_1-papier.png",
+            "image_zoom":"/src/assets/rooms/img/room_1/items/room_1-papier-zoom.jpg",
+            "takeable":true,
             "class": "item",
             "x": 46,
             "y": 61,
