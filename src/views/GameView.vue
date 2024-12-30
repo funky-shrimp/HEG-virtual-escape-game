@@ -1,10 +1,16 @@
 <script>
+import ViewManager from "@/components/ViewManager.vue";
+
 export default {
+  components: {
+    ViewManager,
+  },
+
   data() {
     return {
       currentRoom: {},
-      roomComputedStyle: {},
-      roomAreas : [],
+      currentView: {},
+      inventory: [],
     };
   },
 
@@ -13,54 +19,53 @@ export default {
      * Load the room data from the json file, and set the roomComputedStyle
      * when the image is loaded
      */
-    loadRoom() {
-      fetch(`/src/assets/rooms/room1.json`)
+    loadRoom(room) {
+      if (room === "") room = "room1";
+      //Récupération du fichier JSON
+      fetch(`/src/assets/rooms/${room}.json`)
         .then((response) => {
           return response.json();
         })
         .then((data) => {
           console.log(data);
+          //Sauvegarde la Room
           this.currentRoom = data;
-          this.$refs.roomImage.onload = () => {
-            this.setRoomComputedSize();
-            for(let area in this.currentRoom.areas) {
-              this.roomAreas.push(this.calcAreaPosition(this.currentRoom.areas[area]));
-            }
-          }
+          //Charge la vue
+          this.currentView = this.currentRoom;
         });
     },
 
-    /**
-     * Get the computed CSS style of the room image, and save it to
-     * this.roomComputedStyle
-     */
-    setRoomComputedSize() {
-      const roomImage = this.$refs.roomImage;
-      this.roomComputedStyle = window.getComputedStyle(roomImage);
+    isInnerRoom(target) {
+      const innerRoom = this.currentRoom.areas.find(
+        (area) => area.name === target.id
+      ).innerRoom;
+      return innerRoom;
     },
 
-    calcAreaPosition(area) {
-      let x = +this.roomComputedStyle.marginLeft.replace("px", "");
-      let imgWidth = +this.roomComputedStyle.width.replace("px", "");
-      let imgHeight = +this.roomComputedStyle.height.replace("px", "");
-
-      x += area.x/100*imgWidth;
-      let y = imgHeight*area.y/100;
-
-      let width = area.width/100*imgWidth;
-      let height = area.height/100*imgHeight;
-
-      area.x = x;
-      area.y = y;
-      area.width = width;
-      area.height = height;
-
-      return area; 
-    }
+    manageAreaClick(e) {
+      console.log(e.target);
+      //Si clic sur une zone
+      if (e.target.classList.contains("zone")) {
+        //On regarde si c'est une zone pour sortir de la vue (class out)
+        if (e.target.classList.contains("out")) {
+          this.currentView = this.currentRoom;
+        } 
+        //Sinon c'est une zone interne à la salle
+        else {
+          const view = this.isInnerRoom(e.target);
+          if (view) {
+            this.currentView = view;
+          }
+        }
+      }
+      //Si clic sur un item
+      else if (e.target.classList.contains("item")) {
+      }
+    },
   },
 
   mounted() {
-    this.loadRoom()
+    this.loadRoom("");
   },
 };
 </script>
@@ -72,11 +77,16 @@ export default {
   </header>
 
   <main>
-    <div id="room" v-if="currentRoom">
+    <ViewManager :view="currentView" @press="manageAreaClick" />
+    <!--
+    <div id="room" v-if="currentRoom" @click="manageAreaClick">
       <img ref="roomImage" :src="currentRoom.background" alt="background" />
 
-      <div v-for="area in roomAreas"
+      <div
+        v-for="area in roomAreas"
+        :id="area.name"
         class="area-overlay"
+        :class="area.class"
         :style="{
           position: 'absolute',
           top: area.y + 'px',
@@ -88,6 +98,7 @@ export default {
         @mouseleave="highlightArea = false"
       ></div>
     </div>
+    -->
   </main>
 
   <footer>
@@ -151,13 +162,13 @@ main {
   background-color: black;
 }
 
-#room {
+#view {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-#room img {
+#view img {
   height: 100%;
   object-fit: contain;
   margin: auto;
@@ -171,7 +182,14 @@ main {
 }
 
 .area-overlay:hover {
-  background-color: rgba(0, 0, 255, 0.5); /* Couleur bleue translucide */
   cursor: pointer;
+}
+
+.area-overlay.zone:hover {
+  background-color: #00ff0d7a; /* Couleur vertes pour les zones */
+}
+
+.area-overlay.item:hover {
+  background-color: rgba(0, 0, 255, 0.5); /* Couleur bleue pour les items */
 }
 </style>
