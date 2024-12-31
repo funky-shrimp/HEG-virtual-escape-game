@@ -1,6 +1,10 @@
 {
-  "name": "room_1",
+  "name": "room1",
   "background": "/src/assets/rooms/img/room_1/view/room_1-photo_porte.jpg",
+  "riddle":{
+    "question":"Ah ben non c'est pas aussi facile... il faut un mot de passe pour entrer...",
+    "answer":"compte de resultat"
+  },
   "areas": [
     {
       "name": "boite aux lettres",
@@ -41,13 +45,13 @@
         ]
       },
       "x": 27,
-      "y": 57,
+      "y": 55,
       "width": 7,
-      "height": 7
+      "height": 10
     },
     {
-      "name": "porte",
-      "class": "zone",
+      "name": "Porte d'entrée",
+      "class": "zone riddle",
       "x": 43,
       "y": 58,
       "width": 4,

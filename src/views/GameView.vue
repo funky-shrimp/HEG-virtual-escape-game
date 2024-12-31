@@ -1,18 +1,22 @@
 <script>
 import ViewManager from "@/components/ViewManager.vue";
 import ItemWindow from "@/components/ItemWindow.vue";
+import RiddleWindow from "@/components/RiddleWindow.vue";
 
 export default {
   components: {
     ViewManager,
     ItemWindow,
+    RiddleWindow,
   },
 
   data() {
     return {
+      rooms: ["room1","room2"],
       currentRoom: {},
       currentView: {},
       selectedItem: null,
+      riddle: null,
       inventory: [],
     };
   },
@@ -77,7 +81,7 @@ export default {
      */
     takeItem() {
       //est mis dans l'inventaire si pas déjà présent
-      if (this.inventory.includes(this.selectedItem)) return;
+      if (this.inventory.includes(this.selectedItem) || this.selectedItem.takeable === false) return;
       this.inventory.push(this.selectedItem);
 
       //est enlevé de la variable globale
@@ -91,10 +95,46 @@ export default {
      * Sets the selectedItem to null.
      */
     dropItem() {
-      if(this.inventory.includes(this.selectedItem)){
+      if (this.inventory.includes(this.selectedItem)) {
         this.inventory.splice(this.inventory.indexOf(this.selectedItem), 1);
         this.selectedItem = null;
       }
+    },
+
+    validateRiddle(userAnswer){
+      //Enlève les accents et met en minuscule
+      userAnswer = this.processString(userAnswer);
+      let riddleAnswer = this.processString(this.riddle.answer);
+
+      if(userAnswer === riddleAnswer){
+        console.log("Riddle solved");
+        let nextRoom = "";
+
+        //On récupère le nom de la prochaine salle
+        try{
+          nextRoom = this.rooms.indexOf(this.currentRoom.name) + 1;
+        }catch(e){ //On est peut-être arrivé à la dernière salle
+          console.log(e);
+        }
+
+        
+        if(nextRoom){
+          this.loadRoom(this.rooms[nextRoom]);
+        }
+          
+        this.riddle = null;
+      }
+
+    },
+
+    /**
+     * Returns a string where all accents have been removed, and all
+     * characters are in lower case.
+     * @param {String} str - the string to process
+     * @returns {String} the processed string
+     */
+    processString(str) {
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
     },
 
     manageAreaClick(e) {
@@ -103,6 +143,13 @@ export default {
         //On regarde si c'est une zone pour sortir de la vue (class out)
         if (e.target.classList.contains("out")) {
           this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
+        } 
+        //Sinon si la zone est une zone demandant une énigme
+        else if (e.target.classList.contains("riddle")) {
+          console.log(e.target)
+          this.riddle = this.currentView.riddle;
+          this.riddle.header = e.target.id;
+          console.log(this.riddle)
         }
         //Sinon c'est une zone interne à la salle
         else {
@@ -139,6 +186,12 @@ export default {
       @closeItem="selectedItem = null"
       @take-item="takeItem"
       @drop-item="dropItem"
+    />
+    <RiddleWindow
+      v-if="riddle != null"
+      :riddle="riddle"
+      @closeRiddle="riddle = null"
+      @answerRiddle="validateRiddle"
     />
   </main>
 
@@ -219,7 +272,7 @@ footer p {
   padding: 20px;
   display: flex;
   align-items: center;
-  gap:10px;
+  gap: 10px;
 }
 
 .inventory .item {

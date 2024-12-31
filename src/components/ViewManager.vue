@@ -92,6 +92,7 @@ export default {
     setRoomComputedSize() {
       const viewImage = this.$refs.viewImage;
       this.viewComputedStyle = window.getComputedStyle(viewImage);
+      console.log(this.viewComputedStyle);
     },
 
     /**
@@ -143,7 +144,8 @@ export default {
         width: area.width + 'px',
         height: area.height + 'px',
         backgroundImage: area.image ? 'url(' + area.image + ')' : 'none',
-        backgroundSize: 'cover',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }"
       @mouseover="highlightArea = true"

@@ -1,6 +1,4 @@
 <script>
-import { render } from 'vue';
-
 export default {
   data() {
     return {};
@@ -9,7 +7,7 @@ export default {
   //Injection de l'inventaire de GameView
   inject: ["inventory"],
 
-  emits: ["closeItem", "takeItem"],
+  emits: ["closeItem", "takeItem","dropItem"],
 
   props: {
     item: Object,
@@ -39,7 +37,7 @@ export default {
     </div>
     <div class="item-footer">
         <button id="close-item-window" @click="$emit('closeItem')">Fermer</button>
-        <button v-if="!inventory.includes(item)" id="take-item" @click="$emit('takeItem')">Ramasser</button>
+        <button v-if="!inventory.includes(item) && item.takeable" id="take-item" @click="$emit('takeItem')">Ramasser</button>
         <button v-if="inventory.includes(item)" id="take-item" @click="$emit('dropItem')">Déposer</button>
     </div>
   </div>

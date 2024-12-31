@@ -1,0 +1,128 @@
+{
+  "name": "room2",
+  "background": "/src/assets/rooms/img/room_2/view/room_2-vestiaire.jpg",
+  "riddle": {
+    "question": "Cette porte est verrouillée par un cadenas à six chiffres.",
+    "answer": "221444"
+  },
+  "areas": [
+    {
+        "name":"Sortie vestiaire",
+        "class":"zone riddle",
+        "x":72,
+        "y":36,
+        "width":2,
+        "height":36
+    },
+    {
+      "name": "Club de golf",
+      "class": "zone",
+      "image": "/src/assets/rooms/img/room_2/items/room_2-golf.png",
+      "innerRoom": {
+        "background": "/src/assets/rooms/img/room_2/view/room_2-club_golf.jpg",
+        "areas": [
+          {
+            "name": "sortir",
+            "class": "zone out",
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 23
+          }
+        ]
+      },
+      "x": 61,
+      "y": 67,
+      "width": 9,
+      "height": 18
+    },
+    {
+      "name": "Maillot",
+      "class": "item",
+      "takeable": true,
+      "image": "/src/assets/rooms/img/room_2/items/room_2-maillot_4.png",
+      "image_zoom": "/src/assets/rooms/img/room_2/items/room_2-maillot_4-zoom.png",
+      "x": 59,
+      "y": 47,
+      "width": 7,
+      "height": 10
+    },
+    {
+      "name": "Une veste",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_2/items/room_2-veste.png",
+      "description": "Cette veste ne présente aucun intérêt...",
+      "x": 37,
+      "y": 45,
+      "width": 4,
+      "height": 19
+    },
+    {
+      "name": "Des balles",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_2/items/room_2-balles.png",
+      "description": "J'aime pas les jeux de balles!",
+      "x": 6,
+      "y": 72,
+      "width": 10,
+      "height": 8
+    },
+    {
+      "name": "Un papier",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_2/items/room_2-papier_inutile.png",
+      "description": "Un papier inutile...",
+      "x": 19,
+      "y": 72,
+      "width": 4,
+      "height": 3
+    },
+    {
+      "name": "Un papier avec un indice",
+      "class": "item",
+      "takeable": true,
+      "image": "/src/assets/rooms/img/room_2/items/room_2-papier_enigme.png",
+      "image_zoom": "/src/assets/rooms/img/room_2/items/room_2-papier_enigme-zoom.png",
+      "x": 45,
+      "y": 67,
+      "width": 4,
+      "height": 3
+    },
+    {
+        "name": "Un classeur bleu",
+        "class": "item",
+        "takeable": true,
+        "image": "/src/assets/rooms/img/room_2/items/room_2-classeur.png",
+        "image_zoom": "/src/assets/rooms/img/room_2/items/room_2-classeur-zoom.png",
+        "x": 20,
+        "y": 78,
+        "width": 10,
+        "height": 3
+      },
+      {
+        "name": "Des trucs",
+        "class": "item",
+        "takeable": false,
+        "image": "/src/assets/rooms/img/room_2/items/room_2-des_trucs.png",
+        "description": "Aucune idée de leur utilité... laissons ça ici!",
+        "x": 40,
+        "y": 77,
+        "width": 10,
+        "height": 6
+      },
+      {
+        "name": "Des chaussures",
+        "class": "item",
+        "takeable": false,
+        "image": "/src/assets/rooms/img/room_2/items/room_2-chaussures.png",
+        "description": "Mon dieu! Quelle odeur...",
+        "x": 41,
+        "y": 87,
+        "width": 8,
+        "height": 6
+      }
+  ]
+}
