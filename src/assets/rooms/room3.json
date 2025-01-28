@@ -1,0 +1,99 @@
+{
+  "name": "room3",
+  "background": "/src/assets/rooms/img/room_3/view/room_3-vestiaire_2.jpg",
+  "riddle": {
+    "question": "Cette porte est verrouillée par un cadenas à six chiffres.",
+    "answer": "179861"
+  },
+  "areas": [
+    {
+      "name": "Sortie vestiaire",
+      "class": "zone riddle",
+      "x": 15,
+      "y": 8,
+      "width": 18,
+      "height": 33
+    },
+    {
+      "name": "Maillot",
+      "class": "item",
+      "takeable": true,
+      "image": "/src/assets/rooms/img/room_3/items/maillot_15.png",
+      "image_zoom": "/src/assets/rooms/img/room_3/items/maillot_15-zoom.png",
+      "x": 37,
+      "y": 26,
+      "width": 12,
+      "height": 24
+    },
+    {
+      "name": "Poubelle",
+      "class": "zone innerRoom",
+      "image": "/src/assets/rooms/img/room_3/items/poubelle.png",
+      "innerRoom": {
+        "background": "/src/assets/rooms/img/room_3/view/room_3-poubelle.jpg",
+        "riddle": {
+          "image": "/src/assets/rooms/img/room_3/items/poubelle_papier-zoom.png",
+          "answer": "RESULTAT NET / CAPITAUX PROPRES",
+          "unlock": "Un Papier",
+          "hide": "Un papier avec une énigme"
+        },
+        "areas": [
+          {
+            "name": "Un papier avec une énigme",
+            "class": "zone riddle",
+            "image": "/src/assets/rooms/img/room_3/items/poubelle_papier.png",
+            "x": 41,
+            "y": 43,
+            "width": 22,
+            "height": 22
+          },
+          {
+            "name": "sortir",
+            "class": "zone out",
+            "x": 0,
+            "y": 0,
+            "width": 100,
+            "height": 23
+          }
+        ]
+      },
+      "x": 31,
+      "y": 60,
+      "width": 12,
+      "height": 23
+    },
+    {
+      "name": "Des affaires",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_3/items/veste.png",
+      "description": "Pas question que je prenne ça!",
+      "x": 46,
+      "y": 51,
+      "width": 12,
+      "height": 18
+    },
+    {
+      "name": "Un casque",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_3/items/casque.png",
+      "description": "Celui-ci ne semble pas tellement connecté...",
+      "x": 50,
+      "y": 82,
+      "width": 6,
+      "height": 9
+    },
+    {
+      "name": "Un Papier",
+      "class": "item hidden",
+      "takeable": true,
+      "image": "/src/assets/rooms/img/room_3/items/papier_enigme.png",
+      "image_zoom": "/src/assets/rooms/img/room_3/items/papier_enigme-zoom.png",
+      "x": 29,
+      "y": 80,
+      "width": 9,
+      "height": 6
+    }
+  ]
+}

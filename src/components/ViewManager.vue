@@ -74,15 +74,17 @@ export default {
       //Clone du tableau d'objet, si on ne le faisait pas, le tableau original serait modifié
       // et les zones ne seraient pas correctement affichées.
       //Affiche que les items qui ne sont pas dans l'inventaire
-      this.viewAreas = this.view.areas
-        .map((area) => ({ ...area }))
-        .filter(
-          (area) => !this.inventory.some((item) => item.name === area.name)
-        );
+      
+        this.viewAreas = this.view.areas
+          .map((area) => ({ ...area }))
+          .filter(
+            (area) => !this.inventory.some((item) => item.name === area.name)
+          );
 
-      for (let area in this.viewAreas) {
-        this.calcAreaPosition(this.viewAreas[area]);
-      }
+        for (let area in this.viewAreas) {
+          this.calcAreaPosition(this.viewAreas[area]);
+        }
+      
     },
 
     /**
@@ -92,7 +94,6 @@ export default {
     setRoomComputedSize() {
       const viewImage = this.$refs.viewImage;
       this.viewComputedStyle = window.getComputedStyle(viewImage);
-      console.log(this.viewComputedStyle);
     },
 
     /**
@@ -139,6 +140,7 @@ export default {
       :class="area.class"
       :style="{
         position: 'absolute',
+        display: area.class.includes('hidden') ? 'none' : 'block',
         top: area.y + 'px',
         left: area.x + 'px',
         width: area.width + 'px',

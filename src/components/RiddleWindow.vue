@@ -20,11 +20,12 @@ export default {
   <div class="overlay"></div>
   <div class="riddle-window">
     <div class="riddle-header">
-      <p>{{ riddle.header }}</p>
+      <p v-if="riddle.header">{{ riddle.header }}</p>
       <button id="close-riddle-cross" @click="$emit('closeRiddle')"></button>
     </div>
     <div class="riddle-content">
-        <p>{{ riddle.question }}</p>
+        <img v-if="riddle.image" :src="riddle.image" :style="{ width: '50%' }" />
+        <p v-if="riddle.question">{{ riddle.question }}</p>
         <input type="text" v-model="userAnswer" placeholder="Votre réponse" @keypress.enter="$emit('answerRiddle', userAnswer)"/>
     </div>
     <div class="item-footer">

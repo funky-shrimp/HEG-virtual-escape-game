@@ -12,12 +12,12 @@ export default {
 
   data() {
     return {
-      rooms: ["room1","room2"],
-      currentRoom: {},
-      currentView: {},
-      selectedItem: null,
-      riddle: null,
-      inventory: [],
+      rooms: ["room1", "room2","room3","room4","room5","room6"], // List des salles
+      currentRoom: {}, //Salle actuelle
+      currentView: {}, //Vue actuelle
+      selectedItem: null, //Item selectionné
+      riddle: null, //Enigme actuelle
+      inventory: [], //Inventaire
     };
   },
   provide() {
@@ -81,13 +81,15 @@ export default {
      */
     takeItem() {
       //est mis dans l'inventaire si pas déjà présent
-      if (this.inventory.includes(this.selectedItem) || this.selectedItem.takeable === false) return;
+      if (
+        this.inventory.includes(this.selectedItem) ||
+        this.selectedItem.takeable === false
+      )
+        return;
       this.inventory.push(this.selectedItem);
 
       //est enlevé de la variable globale
       this.selectedItem = null;
-
-      console.log("inventory", this.inventory);
     },
 
     /**
@@ -101,30 +103,114 @@ export default {
       }
     },
 
-    validateRiddle(userAnswer){
+    /**
+     * Permet d'ajouter ou de supprimer une classe à une zone
+     * La zone est recherché à partir de son nom sur la vue actuelle ou sur la salle actuelle
+     * @param areaName
+     * @param state
+     */
+    changeAreaState(areaName, state) {
+      //On récupère la vue possédant la zone
+      // C'est redondant mais currentView pourrait être une zone à l'intérieur de currentRoom
+      //  tout comme elle pourrait être currentRoom
+      const viewWithAreaToUnlock = this.currentView.areas.some(
+        (a) => a.name === areaName
+      )
+        ? this.currentView
+        : this.currentRoom;
+
+      if (viewWithAreaToUnlock) {
+        //Si la zone n'a pas l'état qu'on souhaite lui donné, on lui donne
+        if (
+          !viewWithAreaToUnlock.areas
+            .find((a) => a.name === areaName)
+            .class.includes(state)
+        ) {
+          viewWithAreaToUnlock.areas.find((a) => a.name === areaName).class +=
+            " " + state;
+          this.$refs.viewmanager.refreshAreas();
+        }
+        //Sinon on lui enlève
+        else {
+          viewWithAreaToUnlock.areas.find((a) => a.name === areaName).class =
+            viewWithAreaToUnlock.areas
+              .find((a) => a.name === areaName)
+              .class.replace(state, "");
+          this.$refs.viewmanager.refreshAreas();
+        }
+
+        //Le code ci-dessous permet de mettre à jour currentRoom
+        // dans le cas où une zone doit changé d'état (hidden ou non)
+        // si on ne fait pas ça, et que par exemple on est dans une InnerRoom,
+        // currentRoom ne prendra pas en compte la modification d'état
+        // et la zone affectée sera toujours visible
+
+        //Si la viewWithAreaToUnlock est la room, on met à jour
+        // l'objet currentRoom afin que les propriétés de la salle changent
+        if (this.currentRoom.name === viewWithAreaToUnlock.name) {
+          this.currentRoom = viewWithAreaToUnlock;
+        } else {
+          //Sinon la viewWithAreaToUnlock est une vue différente à
+          // currentRoom, par exemple InnerRoom, on met à jour cette InnerRoom
+          // à l'intérieur de currentRoom
+          this.currentRoom.areas.find(
+            (area) =>
+              area.hasOwnProperty("innerRoom") &&
+              area.innerRoom.name === viewWithAreaToUnlock.name
+          ).innerRoom = viewWithAreaToUnlock;
+        }
+      }
+    },
+
+    /**
+     * Vérifie si l'énigme est correcte
+     * @param userAnswer 
+     */
+    validateRiddle(userAnswer) {
       //Enlève les accents et met en minuscule
       userAnswer = this.processString(userAnswer);
       let riddleAnswer = this.processString(this.riddle.answer);
+      let currentRoomAnswer = this.processString(
+        this.currentRoom.riddle.answer
+      );
+      console.log("userAnswer",userAnswer)
+      console.log("riddleAnswer", riddleAnswer)
+      console.log("currentRoomAnswer", currentRoomAnswer);
 
-      if(userAnswer === riddleAnswer){
+      if (userAnswer === riddleAnswer) {
         console.log("Riddle solved");
         let nextRoom = "";
-
-        //On récupère le nom de la prochaine salle
-        try{
-          nextRoom = this.rooms.indexOf(this.currentRoom.name) + 1;
-        }catch(e){ //On est peut-être arrivé à la dernière salle
-          console.log(e);
-        }
-
-        
-        if(nextRoom){
-          this.loadRoom(this.rooms[nextRoom]);
-        }
+        //Si l'énigme est celle de la salle, on passe à la suivante
+        if (riddleAnswer === currentRoomAnswer) {
           
-        this.riddle = null;
-      }
+          //On récupère le nom de la prochaine salle
+          try {
+            nextRoom = this.rooms.indexOf(this.currentRoom.name) + 1;
+          } catch (e) {
+            //On est peut-être arrivé à la dernière salle
+            console.log(e);
+          }
 
+          if (nextRoom) {
+            this.loadRoom(this.rooms[nextRoom]);
+          }
+
+          this.riddle = null;
+          
+        } //Sinon on regarde si l'énigme déverrouille une zone
+        else if (this.riddle.hasOwnProperty("unlock")) {
+          //On récupère le nom de la zone
+          const areaToBeUnlocked = this.riddle.unlock;
+
+          this.changeAreaState(areaToBeUnlocked, "hidden");
+
+          if (this.riddle.hasOwnProperty("hide")) {
+            this.changeAreaState(this.riddle.hide, "hidden");
+          }
+
+          this.riddle = null;
+        }
+      }
     },
 
     /**
@@ -134,7 +220,11 @@ export default {
      * @returns {String} the processed string
      */
     processString(str) {
-      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .split(" ").join("");
     },
 
     manageAreaClick(e) {
@@ -142,17 +232,20 @@ export default {
       if (e.target.classList.contains("zone")) {
         //On regarde si c'est une zone pour sortir de la vue (class out)
         if (e.target.classList.contains("out")) {
+          //Permet de faire sortir de la salle actuelle
+          // This line of code creates a deep copy of the currentRoom object and assigns it to currentView.
+          // JSON.stringify converts the currentRoom object into a JSON string, and JSON.parse converts
+          // that JSON string back into a new JavaScript object, effectively cloning the original object.
+          // This is done to ensure that currentView is a separate instance and not a reference to currentRoom.
           this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
-        } 
+        }
         //Sinon si la zone est une zone demandant une énigme
         else if (e.target.classList.contains("riddle")) {
-          console.log(e.target)
           this.riddle = this.currentView.riddle;
           this.riddle.header = e.target.id;
-          console.log(this.riddle)
         }
-        //Sinon c'est une zone interne à la salle
-        else {
+        //Sinon si c'est une zone interne à la salle
+        else if (e.target.classList.contains("innerRoom")) {
           const view = this.isInnerRoom(e.target);
           if (view) {
             this.currentView = view;
@@ -167,7 +260,7 @@ export default {
   },
 
   mounted() {
-    this.loadRoom("");
+    this.loadRoom("room5");
   },
 };
 </script>
@@ -179,7 +272,11 @@ export default {
   </header>
 
   <main>
-    <ViewManager :view="currentView" @press="manageAreaClick" />
+    <ViewManager
+      ref="viewmanager"
+      :view="currentView"
+      @press="manageAreaClick"
+    />
     <ItemWindow
       v-if="selectedItem != null"
       :item="selectedItem"

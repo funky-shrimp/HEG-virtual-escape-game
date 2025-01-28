@@ -8,7 +8,7 @@
   "areas": [
     {
       "name": "boite aux lettres",
-      "class": "zone",
+      "class": "zone innerRoom",
       "innerRoom": {
         "background": "/src/assets/rooms/img/room_1/view/room_1-boite_aux_lettres.jpg",
         "areas": [

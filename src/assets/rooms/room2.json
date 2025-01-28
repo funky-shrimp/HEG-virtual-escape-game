@@ -16,7 +16,7 @@
     },
     {
       "name": "Club de golf",
-      "class": "zone",
+      "class": "zone innerRoom",
       "image": "/src/assets/rooms/img/room_2/items/room_2-golf.png",
       "innerRoom": {
         "background": "/src/assets/rooms/img/room_2/view/room_2-club_golf.jpg",
