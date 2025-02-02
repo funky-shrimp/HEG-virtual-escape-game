@@ -3,7 +3,8 @@
   "background": "/src/assets/rooms/img/room_1/view/room_1-photo_porte.jpg",
   "riddle":{
     "question":"Ah ben non c'est pas aussi facile... il faut un mot de passe pour entrer...",
-    "answer":"compte de resultat"
+    "answer":"compte de resultat",
+    "congratulation":"Le chiffre d’affaires représente le montant des ventes (de biens ou de services) et se trouve dans le compte de résultat."
   },
   "areas": [
     {
@@ -23,6 +24,7 @@
           {
             "name": "Consignes",
             "description": "Cliquez sur le lien ci-dessous pour télécharger les consignes : ",
+            "link":"/src/assets/misc/innokask_consignes.pdf",
             "image":"/src/assets/rooms/img/room_1/items/room_1-instructions_de_jeu.png",
             "takeable":true,
             "class": "item",

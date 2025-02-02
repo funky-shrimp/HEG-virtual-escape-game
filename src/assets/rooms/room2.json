@@ -3,7 +3,8 @@
   "background": "/src/assets/rooms/img/room_2/view/room_2-vestiaire.jpg",
   "riddle": {
     "question": "Cette porte est verrouillée par un cadenas à six chiffres.",
-    "answer": "221444"
+    "answer": "221444",
+    "congratulation":"On prévoit de vendre 2’668 casques sur l’année N à CHF 83 par pièce. Le chiffre d’affaires prévisionnel correspond à 2’668 X 83 = 221’444"
   },
   "areas": [
     {

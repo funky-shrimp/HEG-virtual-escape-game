@@ -28,6 +28,9 @@ export default {
     <div class="item-content" v-if="item.description">
       {{ item.description }}
     </div>
+    <div class="item-content" v-if="item.link">
+      <a :href="item.link" target="_blank">{{ item.link }}</a>
+    </div>
     <div class="item-content" v-if="item.image_zoom">
       <img
         :src="item.image_zoom"
@@ -66,14 +69,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .item-content {
   display: flex;
   justify-content: center;
   min-height: 10vh;
-  border-top: 1px solid #dee2e6;
-  border-bottom: 1px solid #dee2e6;
 }
 
 .item-content:has(img) {
@@ -83,6 +85,7 @@ export default {
 .item-footer {
   display: flex;
   justify-content: flex-end;
+  border-top: 1px solid #dee2e6;
 }
 
 .item-header p {

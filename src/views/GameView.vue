@@ -2,22 +2,25 @@
 import ViewManager from "@/components/ViewManager.vue";
 import ItemWindow from "@/components/ItemWindow.vue";
 import RiddleWindow from "@/components/RiddleWindow.vue";
+import ContextualWindow from "@/components/ContextualWindow.vue";
 
 export default {
   components: {
     ViewManager,
     ItemWindow,
     RiddleWindow,
+    ContextualWindow,
   },
 
   data() {
     return {
-      rooms: ["room1", "room2","room3","room4","room5","room6"], // List des salles
+      rooms: ["room1", "room2", "room3", "room4", "room5", "room6"], // List des salles
       currentRoom: {}, //Salle actuelle
       currentView: {}, //Vue actuelle
       selectedItem: null, //Item selectionné
       riddle: null, //Enigme actuelle
       inventory: [], //Inventaire
+      congratText: "",
     };
   },
   provide() {
@@ -164,25 +167,26 @@ export default {
 
     /**
      * Vérifie si l'énigme est correcte
-     * @param userAnswer 
+     * @param userAnswer
      */
-    validateRiddle(userAnswer) {
+    async validateRiddle(userAnswer) {
       //Enlève les accents et met en minuscule
       userAnswer = this.processString(userAnswer);
       let riddleAnswer = this.processString(this.riddle.answer);
       let currentRoomAnswer = this.processString(
         this.currentRoom.riddle.answer
       );
-      console.log("userAnswer",userAnswer)
-      console.log("riddleAnswer", riddleAnswer)
+      /*
+      console.log("userAnswer", userAnswer);
+      console.log("riddleAnswer", riddleAnswer);
       console.log("currentRoomAnswer", currentRoomAnswer);
+*/
 
       if (userAnswer === riddleAnswer) {
-        console.log("Riddle solved");
+        //console.log("Riddle solved");
         let nextRoom = "";
         //Si l'énigme est celle de la salle, on passe à la suivante
         if (riddleAnswer === currentRoomAnswer) {
-          
           //On récupère le nom de la prochaine salle
           try {
             nextRoom = this.rooms.indexOf(this.currentRoom.name) + 1;
@@ -191,25 +195,55 @@ export default {
             console.log(e);
           }
 
+          this.congratText = this.riddle.congratulation;
+          this.riddle = null;
+
+          // Create and wait for the promise to resolve
+          const windowClosed = new Promise((resolve) => {
+            this.onContextualWindowClose = resolve;
+          });
+
+          await windowClosed;
+
           if (nextRoom) {
             this.loadRoom(this.rooms[nextRoom]);
           }
-
-          this.riddle = null;
-          
         } //Sinon on regarde si l'énigme déverrouille une zone
         else if (this.riddle.hasOwnProperty("unlock")) {
-          //On récupère le nom de la zone
-          const areaToBeUnlocked = this.riddle.unlock;
+          //On récupère le nom de la zone à débloquer
+          const areasToBeUnlocked = this.riddle.unlock;
 
-          this.changeAreaState(areaToBeUnlocked, "hidden");
+          areasToBeUnlocked.forEach((area) => {
+            this.changeAreaState(area, "hidden");
+          });
 
           if (this.riddle.hasOwnProperty("hide")) {
-            this.changeAreaState(this.riddle.hide, "hidden");
+            const areasToBeHidden = this.riddle.hide;
+            areasToBeHidden.forEach((area) => {
+              this.changeAreaState(area, "hidden");
+            });
           }
+
+          this.congratText = this.riddle.congratulation;
+          this.riddle = null;
+
+          // Create and wait for the promise to resolve
+          const windowClosed = new Promise((resolve) => {
+            this.onContextualWindowClose = resolve;
+          });
+
+          await windowClosed;
 
           this.riddle = null;
         }
+      }
+    },
+
+    handleContextualClose() {
+      this.congratText = "";
+      if (this.onContextualWindowClose) {
+        this.onContextualWindowClose();
+        this.onContextualWindowClose = null;
       }
     },
 
@@ -224,7 +258,8 @@ export default {
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
-        .split(" ").join("");
+        .split(" ")
+        .join("");
     },
 
     manageAreaClick(e) {
@@ -260,7 +295,7 @@ export default {
   },
 
   mounted() {
-    this.loadRoom("room5");
+    this.loadRoom("");
   },
 };
 </script>
@@ -276,6 +311,11 @@ export default {
       ref="viewmanager"
       :view="currentView"
       @press="manageAreaClick"
+    />
+    <ContextualWindow
+      v-if="congratText != ''"
+      @closeWindow="handleContextualClose"
+      :congratText="congratText"
     />
     <ItemWindow
       v-if="selectedItem != null"
