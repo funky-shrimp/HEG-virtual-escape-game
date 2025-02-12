@@ -3,6 +3,7 @@ import ViewManager from "@/components/ViewManager.vue";
 import ItemWindow from "@/components/ItemWindow.vue";
 import RiddleWindow from "@/components/RiddleWindow.vue";
 import ContextualWindow from "@/components/ContextualWindow.vue";
+import TimerWindow from "@/components/TimerWindow.vue";
 
 export default {
   components: {
@@ -10,6 +11,7 @@ export default {
     ItemWindow,
     RiddleWindow,
     ContextualWindow,
+    TimerWindow,
   },
 
   data() {
@@ -21,12 +23,26 @@ export default {
       riddle: null, //Enigme actuelle
       inventory: [], //Inventaire
       congratText: "",
+      warning: "",
+      timeRemaining: 3600,
+      timerInterval: null,
     };
   },
   provide() {
     return {
       inventory: this.inventory,
     };
+  },
+
+  computed: {
+    formattedTime() {
+      const minutes = Math.floor(this.timeRemaining / 60);
+      const seconds = this.timeRemaining % 60;
+      return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+        2,
+        "0"
+      )}`;
+    },
   },
 
   methods: {
@@ -46,7 +62,122 @@ export default {
           this.currentRoom = data;
           //Charge la vue en effectuant un clone de la currentRoom
           this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
+          this.saveProgress();
         });
+    },
+
+    /**
+     * Permet de sauvegarder la progression de l'utilisateur
+     */
+    saveProgress() {
+      const progress = {
+        currentRoom: this.currentRoom, // Objet représentant la salle actuelle
+        currentView: this.currentView,
+        inventory: this.inventory, // Liste des objets de l'inventaire
+      };
+
+      // Convertir en chaîne JSON et sauvegarder dans localStorage
+      localStorage.setItem("gameProgress", JSON.stringify(progress));
+      //console.log("Progress saved:", progress);
+    },
+
+    /**
+     * Permet de charger la progession de l'utilisateur
+     */
+    loadProgress() {
+      const savedProgress = localStorage.getItem("gameProgress");
+      if (savedProgress) {
+        const progress = JSON.parse(savedProgress);
+        const currentTimestamp = Date.now();
+
+        if (progress.lastSavedTimestamp) {
+          const elapsedTime = Math.floor(
+            (currentTimestamp - progress.lastSavedTimestamp) / 1000
+          );
+          this.timeRemaining = Math.max(
+            0,
+            progress.timeRemaining - elapsedTime
+          ); // Évite que le temps soit négatif
+        } else {
+          this.timeRemaining = progress.timeRemaining;
+        }
+
+        this.currentRoom = progress.currentRoom || {};
+        this.currentView = progress.currentView || {};
+        this.inventory = progress.inventory || [];
+
+        //console.log("Progress loaded and time adjusted:", this.timeRemaining);
+      } else {
+        //console.log("No saved progress found. Loading the first room.");
+        this.loadRoom("");
+      }
+    },
+
+    clearProgress() {
+      this.clearProgress();
+      localStorage.removeItem("gameProgress");
+      console.log("Progress cleared.");
+    },
+
+    /**
+     * Démarre le timer pour l'Escape Game
+     */
+    startTimer() {
+      // Supprimez tout ancien intervalle actif
+      this.clearTimer();
+
+      // Créez un nouvel intervalle
+      this.timerInterval = setInterval(() => {
+        if (this.timeRemaining > 0) {
+          this.timeRemaining--;
+          this.saveTimer();
+        } else {
+          clearInterval(this.timerInterval); // Arrêtez le timer quand il atteint 0
+          this.timerInterval = null;
+          console.log("Le temps est écoulé !");
+        }
+      }, 1000); // Décrémente toutes les secondes
+    },
+
+    /**
+     * Supprime l'événement timer
+     */
+    clearTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+    },
+
+    /**
+     * Met à jour le timer dans progress dans localStorage
+     * permet d'éviter la triche dans le cas où l'utilisateur
+     * ferme la fenêtre pour gagner du temps
+     */
+    saveTimer() {
+      const savedProgress =
+        JSON.parse(localStorage.getItem("gameProgress")) || {};
+
+      // Vérifie que les données nécessaires existent
+      if (
+        savedProgress.currentRoom &&
+        savedProgress.currentView &&
+        Array.isArray(savedProgress.inventory)
+      ) {
+        const currentTimestamp = Date.now();
+        const progress = {
+          ...savedProgress,
+          timeRemaining: this.timeRemaining,
+          lastSavedTimestamp: currentTimestamp,
+        };
+        localStorage.setItem("gameProgress", JSON.stringify(progress));
+        //console.log("Timer progress saved:", progress);
+      } /*else {
+        console.warn(
+          "Timer save skipped: Missing required keys in gameProgress",
+          savedProgress
+        );
+      }*/
     },
 
     /**
@@ -91,6 +222,8 @@ export default {
         return;
       this.inventory.push(this.selectedItem);
 
+      //Sauvegarde de la progression
+      this.saveProgress();
       //est enlevé de la variable globale
       this.selectedItem = null;
     },
@@ -102,6 +235,7 @@ export default {
     dropItem() {
       if (this.inventory.includes(this.selectedItem)) {
         this.inventory.splice(this.inventory.indexOf(this.selectedItem), 1);
+        this.saveProgress()
         this.selectedItem = null;
       }
     },
@@ -162,6 +296,8 @@ export default {
               area.innerRoom.name === viewWithAreaToUnlock.name
           ).innerRoom = viewWithAreaToUnlock;
         }
+
+        this.saveProgress();
       }
     },
 
@@ -170,7 +306,7 @@ export default {
      * @param userAnswer
      */
     async validateRiddle(userAnswer) {
-      //Enlève les accents et met en minuscule
+      //Enlève les accents, espaces et met en minuscule
       userAnswer = this.processString(userAnswer);
       let riddleAnswer = this.processString(this.riddle.answer);
       let currentRoomAnswer = this.processString(
@@ -196,10 +332,15 @@ export default {
           }
 
           this.congratText = this.riddle.congratulation;
+          //S'il y a un message pour rendre attentif le joueur
+          // (e.g "Attention, les méchants sont derrières vous")
+          this.warning = this.riddle.warning ? this.riddle.warning : "";
+
           this.riddle = null;
 
           // Create and wait for the promise to resolve
           const windowClosed = new Promise((resolve) => {
+            //Fermeture de la fenêtre contextuelle
             this.onContextualWindowClose = resolve;
           });
 
@@ -207,6 +348,7 @@ export default {
 
           if (nextRoom) {
             this.loadRoom(this.rooms[nextRoom]);
+            this.saveProgress();
           }
         } //Sinon on regarde si l'énigme déverrouille une zone
         else if (this.riddle.hasOwnProperty("unlock")) {
@@ -273,6 +415,7 @@ export default {
           // that JSON string back into a new JavaScript object, effectively cloning the original object.
           // This is done to ensure that currentView is a separate instance and not a reference to currentRoom.
           this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
+          this.saveProgress();
         }
         //Sinon si la zone est une zone demandant une énigme
         else if (e.target.classList.contains("riddle")) {
@@ -284,6 +427,7 @@ export default {
           const view = this.isInnerRoom(e.target);
           if (view) {
             this.currentView = view;
+            this.saveProgress();
           }
         }
       }
@@ -295,7 +439,8 @@ export default {
   },
 
   mounted() {
-    this.loadRoom("");
+    this.loadProgress();
+    this.startTimer();
   },
 };
 </script>
@@ -310,16 +455,20 @@ export default {
     <ViewManager
       ref="viewmanager"
       :view="currentView"
+      :inventory="inventory"
       @press="manageAreaClick"
     />
     <ContextualWindow
       v-if="congratText != ''"
       @closeWindow="handleContextualClose"
       :congratText="congratText"
+      :warning="warning"
     />
     <ItemWindow
+      ref="itemwindow"
       v-if="selectedItem != null"
       :item="selectedItem"
+      :inventory="inventory"
       @closeItem="selectedItem = null"
       @take-item="takeItem"
       @drop-item="dropItem"
@@ -330,6 +479,7 @@ export default {
       @closeRiddle="riddle = null"
       @answerRiddle="validateRiddle"
     />
+    <TimerWindow :time="formattedTime" />
   </main>
 
   <footer>
@@ -420,6 +570,7 @@ footer p {
 
 main {
   height: 75vh;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;

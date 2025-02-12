@@ -1,19 +1,23 @@
 <script>
+
 export default {
   data() {
     return {};
   },
 
-  //Injection de l'inventaire de GameView
-  inject: ["inventory"],
-
-  emits: ["closeItem", "takeItem","dropItem"],
+  emits: ["closeItem", "takeItem", "dropItem"],
 
   props: {
     item: Object,
+    inventory: Array,
   },
 
   methods: {
+    isItemInInventory(item) {
+      return this.inventory.some(
+        (invItem) => JSON.stringify(invItem) === JSON.stringify(item)
+      );
+    },
   },
 };
 </script>
@@ -29,7 +33,7 @@ export default {
       {{ item.description }}
     </div>
     <div class="item-content" v-if="item.link">
-      <a :href="item.link" target="_blank">{{ item.link }}</a>
+      <a :href="item.link.url" target="_blank">{{ item.link.text }}</a>
     </div>
     <div class="item-content" v-if="item.image_zoom">
       <img
@@ -39,9 +43,21 @@ export default {
       />
     </div>
     <div class="item-footer">
-        <button id="close-item-window" @click="$emit('closeItem')">Fermer</button>
-        <button v-if="!inventory.includes(item) && item.takeable" id="take-item" @click="$emit('takeItem')">Ramasser</button>
-        <button v-if="inventory.includes(item)" id="take-item" @click="$emit('dropItem')">Déposer</button>
+      <button id="close-item-window" @click="$emit('closeItem')">Fermer</button>
+      <button
+        v-if="!isItemInInventory(item) && item.takeable"
+        id="take-item"
+        @click="$emit('takeItem')"
+      >
+        Ramasser
+      </button>
+      <button
+        v-if="isItemInInventory(item)"
+        id="take-item"
+        @click="$emit('dropItem')"
+      >
+        Déposer
+      </button>
     </div>
   </div>
 </template>
@@ -82,6 +98,10 @@ export default {
   align-items: center;
 }
 
+.item-content a{
+  color: #0d6efd;
+}
+
 .item-footer {
   display: flex;
   justify-content: flex-end;
@@ -119,7 +139,7 @@ export default {
 #close-item-cross:before,
 #close-item-cross:after {
   position: absolute;
-  top:0px;
+  top: 0px;
   content: " ";
   height: 33px;
   width: 2px;

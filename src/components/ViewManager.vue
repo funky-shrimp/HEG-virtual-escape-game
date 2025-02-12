@@ -3,10 +3,8 @@ export default {
   //Déclaration de la vue passée par GameView dans le template du component
   props: {
     view: Object,
+    inventory: Array,
   },
-
-  //Injection de l'inventaire de GameView
-  inject: ["inventory"],
 
   data() {
     return {
@@ -173,7 +171,8 @@ export default {
 .area-overlay {
   background-color: transparent; /* Couleur de base transparente */
   border: 1px solid transparent; /* Délimitation invisible au départ */
-  transition: background-color 0.3s, border-color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  
 }
 
 .area-overlay:hover {
@@ -181,10 +180,13 @@ export default {
 }
 
 .area-overlay.zone:hover {
-  background-color: #00ff0d7a; /* Couleur vertes pour les zones */
+  background-color: #00ff0d5f; 
+  box-shadow: 0 0 5px 10px #00ff0d5f;
 }
 
 .area-overlay.item:hover {
-  background-color: rgba(0, 0, 255, 0.5); /* Couleur bleue pour les items */
+  background-color: rgba(0, 0, 255, 0.5); 
+  box-shadow: 0 0 5px 10px rgba(0, 0, 255, 0.5);
 }
+
 </style>

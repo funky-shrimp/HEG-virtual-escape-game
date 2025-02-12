@@ -10,6 +10,7 @@ export default {
 
   props: {
     congratText: String,
+    warning:String
   },
 
   methods: {
@@ -26,6 +27,9 @@ export default {
     </div>
     <div class="contextual-content" v-if="congratText">
       {{ congratText }}
+    </div>
+    <div style="color:red" class="contextual-content" v-if="warning!=''">
+      {{ warning }}
     </div>
     <div class="contextual-footer">
         <button id="close-contextual-window" @click="$emit('closeWindow')">Ok</button>
@@ -56,14 +60,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #dee2e6;
 }
 
 .contextual-content {
   display: flex;
   justify-content: center;
   min-height: 10vh;
-  border-top: 1px solid #dee2e6;
-  border-bottom: 1px solid #dee2e6;
 }
 
 .contextual-content:has(img) {
@@ -73,6 +76,7 @@ export default {
 .contextual-footer {
   display: flex;
   justify-content: flex-end;
+  border-top: 1px solid #dee2e6;
 }
 
 .contextual-header p {

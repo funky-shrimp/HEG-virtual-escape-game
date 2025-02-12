@@ -24,7 +24,10 @@
           {
             "name": "Consignes",
             "description": "Cliquez sur le lien ci-dessous pour télécharger les consignes : ",
-            "link":"/src/assets/misc/innokask_consignes.pdf",
+            "link":{
+              "url":"/src/assets/misc/innokask_consignes.pdf",
+              "text":"Innokask consignes"
+            },
             "image":"/src/assets/rooms/img/room_1/items/room_1-instructions_de_jeu.png",
             "takeable":true,
             "class": "item",
