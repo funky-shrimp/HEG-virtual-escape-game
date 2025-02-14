@@ -1,6 +1,6 @@
 {
     "name":"room4",
-    "background":"/src/assets/rooms/img/room_4/view/room_4-salle_de_gym_sombre.gif",
+    "background":"/rooms/img/room_4/view/room_4-salle_de_gym_sombre.gif",
     "context":"Ouf… Vous avez échappé de justesse aux hommes de main de Legranmechan... Mais vous voilà dans un couloir plongé dans le noir. Essayez de trouver un interrupteur…",
     "riddle":{
         "question":"Vous semblez avoir trouvé un interrupteur, mais pour l’enclencher, vous devez répondre à la question suivante : «Les Suisses ont un terme très spécifique pour nommer une provision pour dépréciation de créances clients. Quel est ce terme ?»",
