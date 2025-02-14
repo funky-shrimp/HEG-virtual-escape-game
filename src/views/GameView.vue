@@ -112,7 +112,7 @@ export default {
     async loadRoom(room) {
       if (room === "") room = "room1";
       //Récupération du fichier JSON
-      fetch(`/src/assets/rooms/${room}.json`)
+      fetch(`/src/assets/${room}.json`)
         .then((response) => {
           return response.json();
         })
@@ -532,7 +532,7 @@ export default {
 <template>
   <header>
     <h1>Escape Game Finance</h1>
-    <a href="src/assets/misc/innokask_consignes.pdf" target="_blank" style="color:#0d6efd">Consignes du jeu</a>
+    <a href="/misc/innokask_consignes.pdf" target="_blank" style="color:#0d6efd">Consignes du jeu</a>
     <button @click="backToMenu">Quitter la partie</button>
   </header>
 

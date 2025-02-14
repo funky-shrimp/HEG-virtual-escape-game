@@ -1,6 +1,6 @@
 {
   "name": "room1",
-  "background": "/src/assets/rooms/img/room_1/view/room_1-photo_porte.jpg",
+  "background": "/rooms/img/room_1/view/room_1-photo_porte.jpg",
   "riddle":{
     "question":"Ah ben non c'est pas aussi facile... il faut un mot de passe pour entrer...",
     "answer":"compte de resultat",
@@ -11,7 +11,7 @@
       "name": "boite aux lettres",
       "class": "zone innerRoom",
       "innerRoom": {
-        "background": "/src/assets/rooms/img/room_1/view/room_1-boite_aux_lettres.jpg",
+        "background": "/rooms/img/room_1/view/room_1-boite_aux_lettres.jpg",
         "areas": [
           {
             "name": "porte",
@@ -25,10 +25,10 @@
             "name": "Consignes",
             "description": "Cliquez sur le lien ci-dessous pour télécharger les consignes : ",
             "link":{
-              "url":"/src/assets/misc/innokask_consignes.pdf",
+              "url":"misc/innokask_consignes.pdf",
               "text":"Innokask consignes"
             },
-            "image":"/src/assets/rooms/img/room_1/items/room_1-instructions_de_jeu.png",
+            "image":"/rooms/img/room_1/items/room_1-instructions_de_jeu.png",
             "takeable":true,
             "class": "item",
             "x": 20,
@@ -38,8 +38,8 @@
           },
           {
             "name": "Énigme 1",
-            "image":"/src/assets/rooms/img/room_1/items/room_1-papier.png",
-            "image_zoom":"/src/assets/rooms/img/room_1/items/room_1-papier-zoom.jpg",
+            "image":"/rooms/img/room_1/items/room_1-papier.png",
+            "image_zoom":"/rooms/img/room_1/items/room_1-papier-zoom.jpg",
             "takeable":true,
             "class": "item",
             "x": 46,
