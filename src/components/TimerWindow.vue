@@ -25,7 +25,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 #timer {
   background-color: rgb(185, 53, 53);
   padding: 20px;

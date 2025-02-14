@@ -4,6 +4,7 @@ import ItemWindow from "@/components/ItemWindow.vue";
 import RiddleWindow from "@/components/RiddleWindow.vue";
 import ContextualWindow from "@/components/ContextualWindow.vue";
 import TimerWindow from "@/components/TimerWindow.vue";
+import GameIntro from "@/components/GameIntro.vue";
 
 export default {
   components: {
@@ -12,6 +13,7 @@ export default {
     RiddleWindow,
     ContextualWindow,
     TimerWindow,
+    GameIntro,
   },
 
   data() {
@@ -26,12 +28,60 @@ export default {
       warning: "",
       timeRemaining: 3600,
       timerInterval: null,
+      isGameStarted: false,
     };
   },
   provide() {
     return {
       inventory: this.inventory,
     };
+  },
+
+  watch: {
+    async currentRoom(newRoom) {
+      if (newRoom.name == this.rooms[this.rooms.length - 1]) {
+        this.clearTimer();
+        const time = this.formattedTime;
+        //On attend 5 secondes avant le message final
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+
+        this.congratText = newRoom.finish + `Temps écoulé : ${time}`;
+
+        // Create and wait for the promise to resolve
+        const windowClosed = new Promise((resolve) => {
+          //Fermeture de la fenêtre contextuelle
+          this.onContextualWindowClose = resolve;
+        });
+
+        await windowClosed;
+        this.clearProgress();
+      }
+    },
+    async timeRemaining(timeRemaining) {
+      if (timeRemaining === 0) {
+        this.congratText =
+          "Vous avez perdu ! Les agents de Legranmechan vous ont attrapés !";
+
+        // Create and wait for the promise to resolve
+        const windowClosed = new Promise((resolve) => {
+          //Fermeture de la fenêtre contextuelle
+          this.onContextualWindowClose = resolve;
+        });
+
+        await windowClosed;
+
+        this.clearTimer();
+        this.clearProgress();
+
+        //Redirige vers la page d'accueil
+        this.$router.push("/");
+      }
+    },
+    isGameStarted(value) {
+      if (value) {
+        this.startTimer();
+      }
+    },
   },
 
   computed: {
@@ -50,7 +100,7 @@ export default {
      * Load the room data from the json file, and set the roomComputedStyle
      * when the image is loaded
      */
-    loadRoom(room) {
+    async loadRoom(room) {
       if (room === "") room = "room1";
       //Récupération du fichier JSON
       fetch(`/src/assets/rooms/${room}.json`)
@@ -87,6 +137,7 @@ export default {
     loadProgress() {
       const savedProgress = localStorage.getItem("gameProgress");
       if (savedProgress) {
+        this.isGameStarted = true;
         const progress = JSON.parse(savedProgress);
         const currentTimestamp = Date.now();
 
@@ -109,14 +160,16 @@ export default {
         //console.log("Progress loaded and time adjusted:", this.timeRemaining);
       } else {
         //console.log("No saved progress found. Loading the first room.");
-        this.loadRoom("");
+
+        //Affiche l'introduction du jeu
+        this.$watch("isGameStarted", (newValue) => {
+          if (newValue) this.loadRoom("");
+        });
       }
     },
 
     clearProgress() {
-      this.clearProgress();
       localStorage.removeItem("gameProgress");
-      console.log("Progress cleared.");
     },
 
     /**
@@ -134,7 +187,6 @@ export default {
         } else {
           clearInterval(this.timerInterval); // Arrêtez le timer quand il atteint 0
           this.timerInterval = null;
-          console.log("Le temps est écoulé !");
         }
       }, 1000); // Décrémente toutes les secondes
     },
@@ -235,7 +287,7 @@ export default {
     dropItem() {
       if (this.inventory.includes(this.selectedItem)) {
         this.inventory.splice(this.inventory.indexOf(this.selectedItem), 1);
-        this.saveProgress()
+        this.saveProgress();
         this.selectedItem = null;
       }
     },
@@ -382,6 +434,11 @@ export default {
     },
 
     handleContextualClose() {
+      // This function is responsible for handling the closure of a contextual window in the game view.
+      // It resets the congratulatory text and checks if there is a pending promise related to the
+      // contextual window closure. If such a promise exists, it resolves the promise, indicating that
+      // the window has been closed, and then sets the onContextualWindowClose function to null to
+      // prevent multiple resolutions or memory leaks.
       this.congratText = "";
       if (this.onContextualWindowClose) {
         this.onContextualWindowClose();
@@ -440,7 +497,6 @@ export default {
 
   mounted() {
     this.loadProgress();
-    this.startTimer();
   },
 };
 </script>
@@ -452,11 +508,19 @@ export default {
   </header>
 
   <main>
-    <ViewManager
+    <GameIntro
+      v-if="!isGameStarted"
+      @startGame="isGameStarted = true"
+    ></GameIntro>
+
+    <ViewManager  
       ref="viewmanager"
       :view="currentView"
       :inventory="inventory"
       @press="manageAreaClick"
+      :style="{
+        display: isGameStarted ? 'block' : 'none',
+      }"
     />
     <ContextualWindow
       v-if="congratText != ''"
@@ -479,7 +543,7 @@ export default {
       @closeRiddle="riddle = null"
       @answerRiddle="validateRiddle"
     />
-    <TimerWindow :time="formattedTime" />
+    <TimerWindow v-if="isGameStarted" :time="formattedTime" />
   </main>
 
   <footer>
@@ -501,7 +565,7 @@ export default {
   </footer>
 </template>
 
-<style>
+<style scoped>
 html,
 body {
   height: 100vh;

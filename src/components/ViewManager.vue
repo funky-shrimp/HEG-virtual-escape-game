@@ -122,7 +122,7 @@ export default {
   },
 
   mounted() {
-    //this.loadAreas();
+
   },
 };
 </script>
@@ -154,7 +154,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 #view {
   position: relative;
   width: 100%;

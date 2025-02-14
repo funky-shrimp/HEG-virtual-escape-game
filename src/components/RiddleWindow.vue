@@ -39,7 +39,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 .overlay {
   width: 100vw;
   height: 100vh;
