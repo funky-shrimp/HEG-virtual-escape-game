@@ -112,7 +112,7 @@ export default {
     async loadRoom(room) {
       if (room === "") room = "room1";
       //Récupération du fichier JSON
-      fetch(`/src/assets/${room}.json`)
+      fetch(`/rooms/${room}.json`)
         .then((response) => {
           return response.json();
         })
