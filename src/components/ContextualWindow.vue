@@ -9,7 +9,7 @@ export default {
   emits: ["closeWindow"],
 
   props: {
-    congratText: String,
+    contextualInfos: Object,
     warning:String
   },
 
@@ -22,14 +22,12 @@ export default {
   <div class="overlay"></div>
   <div class="contextual-window">
     <div class="contextual-header">
-      <p>Bravo</p>
+      <p>{{contextualInfos.title}}</p>
       <button id="close-contextual-cross" @click="$emit('closeWindow')"></button>
     </div>
-    <div class="contextual-content" v-if="congratText">
-      {{ congratText }}
-    </div>
-    <div style="color:red" class="contextual-content" v-if="warning!=''">
-      {{ warning }}
+    <div class="contextual-content" v-if="contextualInfos.text" >
+      <p v-for="text in contextualInfos.text">{{ text }}</p>
+      <p v-if="warning!=''" style="color:red">{{ warning }}</p>
     </div>
     <div class="contextual-footer">
         <button id="close-contextual-window" @click="$emit('closeWindow')">Ok</button>
@@ -50,6 +48,7 @@ export default {
   max-width: 60vw;
   background-color: white;
   border-radius: 5px;
+  z-index: 1;
 }
 
 .contextual-window div {
@@ -65,8 +64,9 @@ export default {
 
 .contextual-content {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   min-height: 10vh;
+  gap:10px;
 }
 
 .contextual-content:has(img) {

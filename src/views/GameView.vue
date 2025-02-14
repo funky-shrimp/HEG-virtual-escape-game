@@ -24,7 +24,10 @@ export default {
       selectedItem: null, //Item selectionné
       riddle: null, //Enigme actuelle
       inventory: [], //Inventaire
-      congratText: "",
+      contextualInfos: {
+        title: "",
+        text: [],
+      },
       warning: "",
       timeRemaining: 3600,
       timerInterval: null,
@@ -41,11 +44,14 @@ export default {
     async currentRoom(newRoom) {
       if (newRoom.name == this.rooms[this.rooms.length - 1]) {
         this.clearTimer();
-        const time = this.formattedTime;
+
+        const time = this.formattedTime(3600 - this.timeRemaining);
         //On attend 5 secondes avant le message final
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
-        this.congratText = newRoom.finish + `Temps écoulé : ${time}`;
+        this.contextualInfos.title = "Bravo";
+        this.contextualInfos.text = newRoom.finish;
+        this.contextualInfos.text.push(`Votre temps : ${time}`);
 
         // Create and wait for the promise to resolve
         const windowClosed = new Promise((resolve) => {
@@ -59,7 +65,11 @@ export default {
     },
     async timeRemaining(timeRemaining) {
       if (timeRemaining === 0) {
-        this.congratText =
+        this.riddle = null;
+        this.selectedItem = null;
+
+        this.contextualInfos.title = "Perdu !";
+        this.contextualInfos.text =
           "Vous avez perdu ! Les agents de Legranmechan vous ont attrapés !";
 
         // Create and wait for the promise to resolve
@@ -84,18 +94,17 @@ export default {
     },
   },
 
-  computed: {
-    formattedTime() {
-      const minutes = Math.floor(this.timeRemaining / 60);
+  computed: {},
+
+  methods: {
+    formattedTime(time) {
+      const minutes = Math.floor(time / 60);
       const seconds = this.timeRemaining % 60;
       return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
         2,
         "0"
       )}`;
     },
-  },
-
-  methods: {
     /**
      * Load the room data from the json file, and set the roomComputedStyle
      * when the image is loaded
@@ -383,7 +392,8 @@ export default {
             console.log(e);
           }
 
-          this.congratText = this.riddle.congratulation;
+          this.contextualInfos.title = "Bravo";
+          this.contextualInfos.text = this.riddle.congratulation;
           //S'il y a un message pour rendre attentif le joueur
           // (e.g "Attention, les méchants sont derrières vous")
           this.warning = this.riddle.warning ? this.riddle.warning : "";
@@ -418,7 +428,8 @@ export default {
             });
           }
 
-          this.congratText = this.riddle.congratulation;
+          this.contextualInfos.title = "Bravo";
+          this.contextualInfos.text = this.riddle.congratulation;
           this.riddle = null;
 
           // Create and wait for the promise to resolve
@@ -430,6 +441,8 @@ export default {
 
           this.riddle = null;
         }
+      } else {
+        this.$refs.riddlewindow.nope();
       }
     },
 
@@ -439,7 +452,8 @@ export default {
       // contextual window closure. If such a promise exists, it resolves the promise, indicating that
       // the window has been closed, and then sets the onContextualWindowClose function to null to
       // prevent multiple resolutions or memory leaks.
-      this.congratText = "";
+      this.contextualInfos.title = "";
+      this.contextualInfos.text = [];
       if (this.onContextualWindowClose) {
         this.onContextualWindowClose();
         this.onContextualWindowClose = null;
@@ -493,6 +507,20 @@ export default {
         this.selectedItem = this.getItem(e.target);
       }
     },
+
+    backToMenu() {
+      if (
+        confirm(
+          "Voulez-vous vraiment quitter la partie ?\nToute progression sera perdue"
+        )
+      ) {
+        if (confirm("Vous êtes vraiment sûr ?!")) {
+          this.clearProgress();
+          this.clearTimer();
+          this.$router.push("/");
+        }
+      }
+    },
   },
 
   mounted() {
@@ -504,16 +532,14 @@ export default {
 <template>
   <header>
     <h1>Escape Game Finance</h1>
-    <button>Retour au menu</button>
+    <a href="src/assets/misc/innokask_consignes.pdf" target="_blank" style="color:#0d6efd">Consignes du jeu</a>
+    <button @click="backToMenu">Quitter la partie</button>
   </header>
 
   <main>
-    <GameIntro
-      v-if="!isGameStarted"
-      @startGame="isGameStarted = true"
-    ></GameIntro>
+    <GameIntro v-if="!isGameStarted" @startGame="isGameStarted = true" />
 
-    <ViewManager  
+    <ViewManager
       ref="viewmanager"
       :view="currentView"
       :inventory="inventory"
@@ -523,9 +549,9 @@ export default {
       }"
     />
     <ContextualWindow
-      v-if="congratText != ''"
+      v-if="contextualInfos.text.length > 0"
       @closeWindow="handleContextualClose"
-      :congratText="congratText"
+      :contextualInfos="contextualInfos"
       :warning="warning"
     />
     <ItemWindow
@@ -538,12 +564,13 @@ export default {
       @drop-item="dropItem"
     />
     <RiddleWindow
+      ref="riddlewindow"
       v-if="riddle != null"
       :riddle="riddle"
       @closeRiddle="riddle = null"
       @answerRiddle="validateRiddle"
     />
-    <TimerWindow v-if="isGameStarted" :time="formattedTime" />
+    <TimerWindow v-if="isGameStarted" :time="formattedTime(timeRemaining)" />
   </main>
 
   <footer>

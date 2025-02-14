@@ -12,7 +12,14 @@ export default {
 
   emits: ["closeRiddle", "answerRiddle"],
 
-  methods: {},
+  methods: {
+
+    nope(){
+      if (document.getElementById("nope").classList.contains("nyet")) {
+        document.getElementById("nope").classList.toggle("nyet");
+      }
+    }
+  },
 };
 </script>
 
@@ -27,8 +34,9 @@ export default {
         <img v-if="riddle.image" :src="riddle.image" :style="{ width: '50%' }" />
         <p v-if="riddle.question">{{ riddle.question }}</p>
         <input type="text" v-model="userAnswer" placeholder="Votre réponse" @keypress.enter="$emit('answerRiddle', userAnswer)"/>
+        <p id="nope" class="nyet" style="color: red;">Mauvaise réponse. (Attention à l'orthographe)</p>
     </div>
-    <div class="item-footer">
+    <div class="riddle-footer">
       <button id="close-riddle-window" @click="$emit('closeRiddle')">
         Fermer
       </button>
@@ -40,6 +48,11 @@ export default {
 </template>
 
 <style scoped>
+
+.nyet{
+  display: none;
+}
+
 .overlay {
   width: 100vw;
   height: 100vh;
@@ -95,7 +108,7 @@ export default {
 }
 
 .riddle-footer button {
-  margin-left: 10px;
+  margin-left: 10px; 
   padding: 10px;
   border-radius: 5px;
   color: white;

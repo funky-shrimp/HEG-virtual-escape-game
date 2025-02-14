@@ -5,7 +5,7 @@
     "riddle":{
         "question":"Vous semblez avoir trouvé un interrupteur, mais pour l’enclencher, vous devez répondre à la question suivante : «Les Suisses ont un terme très spécifique pour nommer une provision pour dépréciation de créances clients. Quel est ce terme ?»",
         "answer":"DUCROIRE",
-        "congratulation":"Lorsqu’on estime qu’il existe un risque qu’un client ne paie pas, on constitue une provision pour les pertes sur créances clients. Cette provision s’appelle « Ducroire » en Suisse."
+        "congratulation":["Lorsqu'on estime qu'il existe un risque qu'un client ne paie pas, on constitue une provision pour les pertes sur créances clients.","Cette provision s'appelle « Ducroire » en Suisse."]
     },
     "areas":[
         {

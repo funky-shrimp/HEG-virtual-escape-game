@@ -4,7 +4,7 @@
   "riddle":{
     "question":"Ah ben non c'est pas aussi facile... il faut un mot de passe pour entrer...",
     "answer":"compte de resultat",
-    "congratulation":"Le chiffre d’affaires représente le montant des ventes (de biens ou de services) et se trouve dans le compte de résultat."
+    "congratulation":["Le chiffre d’affaires représente le montant des ventes (de biens ou de services) et se trouve dans le compte de résultat."]
   },
   "areas": [
     {

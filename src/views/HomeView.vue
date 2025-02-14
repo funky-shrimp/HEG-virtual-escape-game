@@ -1,9 +1,10 @@
 <script setup>
 import HelloWorld from "../components/HelloWorld.vue";
+import GameHome from "./GameHome.vue";
 </script>
 
 <template>
   <main>
-    <HelloWorld />
+    <GameHome />
   </main>
 </template>

@@ -4,7 +4,7 @@
   "riddle": {
     "question": "Cette porte est verrouillée par un cadenas à six chiffres.",
     "answer": "179861",
-    "congratulation":"Le chiffre d’affaires représente le montant des ventes (de biens ou de services) et se trouve dans le compte de résultat.",
+    "congratulation":["Le chiffre d'affaires représente le montant des ventes (de biens ou de services) et se trouve dans le compte de résultat."],
     "warning":"Katastrof! Les agents de Legranmechan sont derrière vous! Passez vite par la fenêtre pour sortir!"
   },
   "areas": [
@@ -17,7 +17,7 @@
       "height": 33
     },
     {
-      "name": "Maillot 15",
+      "name": "Maillot 44",
       "class": "item",
       "takeable": true,
       "image": "/src/assets/rooms/img/room_3/items/maillot_15.png",
@@ -36,7 +36,7 @@
         "riddle": {
           "image": "/src/assets/rooms/img/room_3/items/poubelle_papier-zoom.png",
           "answer": "RESULTAT NET / CAPITAUX PROPRES",
-          "congratulation":"La rentabilité des capitaux propres est une mesure qui permet de mesurer combien chaque franc investi par les actionnaires dans l’entreprise génère en performance nette. Comme tous les ratios, il doit être analysé dans un contexte et dans une vision historique. Par exemple, après distribution d’un dividende aux actionnaires, ce ratio augmente mécaniquement pour un même niveau de résultat (le dénominateur baisse). Il convient donc de l’analyser sur une période de plusieurs années, et de le comparer avec l’équivalent dans des entreprises similaires, sur la même période.",
+          "congratulation":["La rentabilité des capitaux propres est une mesure qui permet de mesurer combien chaque franc investi par les actionnaires dans l'entreprise génère en performance nette.", "Comme tous les ratios, il doit être analysé dans un contexte et dans une vision historique.","Par exemple, après distribution d'un dividende aux actionnaires, ce ratio augmente mécaniquement pour un même niveau de résultat (le dénominateur baisse). Il convient donc de l'analyser sur une période de plusieurs années, et de le comparer avec l'équivalent dans des entreprises similaires, sur la même période."],
           "unlock": ["Un Papier","Sortie vestiaire","Sortie poubelle"],
           "hide": ["Un papier avec une énigme"]
         },
