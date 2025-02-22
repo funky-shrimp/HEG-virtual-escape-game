@@ -2,7 +2,7 @@
 export default {
   data() {
     return {
-      password: "innokick2025",  
+      password: "HEIGVD2025",  
       userInput: "",
     };
   },
@@ -15,12 +15,6 @@ export default {
       }else{
         this.displayError();
       }
-      /*if (this.userEmail === "" || !this.isEmailValid(this.userEmail)) {
-        this.displayError();
-      } else {
-        this.$router.push("/game");
-      }
-        */
     },
     displayError() {
       if (document.getElementById("error").classList.contains("hidden")) {

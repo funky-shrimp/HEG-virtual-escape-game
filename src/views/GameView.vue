@@ -70,7 +70,7 @@ export default {
 
         this.contextualInfos.title = "Perdu !";
         this.contextualInfos.text =
-          "Vous avez perdu ! Les agents de Legranmechan vous ont attrapés !";
+          ["Vous avez perdu ! Les agents de Legranmechan vous ont attrapés !"];
 
         // Create and wait for the promise to resolve
         const windowClosed = new Promise((resolve) => {

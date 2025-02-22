@@ -41,11 +41,11 @@ export default {
       </p>
       <p>
         Or celui-ci est resté dans les anciens vestiaires de gym du créateur
-        principal, un petit suisse (premier diplômé du Master Innokick
-        d'ailleurs…).
+        principal, un petit suisse (premier rooky suisse de l'ELF, la league
+        européenne de foot).
       </p>
       <p>
-        Le temps presse, l'Innokicker doit donc retourner chercher son golden
+        Le temps presse, le startupper doit donc retourner chercher son golden
         kask mais le chemin est semé d'embuches et, comme si cela ne suffisait
         pas, il apprend que les agents envoyés par Legranmechan sont à sa
         poursuite ! Ils ne doivent surtout pas mettre la main sur le précieux
@@ -55,8 +55,7 @@ export default {
     </div>
     <div class="second hidden">
       <p>
-        Vous allez vous mettre dans la peau du petit suisse, ce brave premier
-        Innokicker, et partir à la recherche du golden kask.
+        Vous allez vous mettre dans la peau du petit suisse et partir à la recherche du golden kask.
       </p>
       <p>
         Dans une oreillette, vos collègues de chez Innokask vont vous guider au
@@ -71,8 +70,7 @@ export default {
         <li>
           Des <u>zones bleues</u> → elles indiquent des
           <u>objets à ramasser</u>. Vous pourrez placer certains objets dans
-          votre inventaire (et oui un Innokicker digne de ce nom ne part jamais
-          sans son Innosak)
+          votre inventaire
         </li>
         <li>
           Des <u>zones vertes</u> → elles indiquent des
@@ -108,7 +106,7 @@ export default {
 }
 
 button {
-    margin-top:20px;
+  margin-top: 20px;
   align-self: center;
   padding: 10px;
   border-radius: 5px;
@@ -120,15 +118,14 @@ button {
   display: none !important;
 }
 
-ul{
-    list-style: circle;
-    list-style-position: outside;
-    padding: 0 20px 0 20px;
+ul {
+  list-style: circle;
+  list-style-position: outside;
+  padding: 0 20px 0 20px;
 }
 
 p {
   margin: 10px 0;
   align-self: flex-start;
 }
-
 </style>
