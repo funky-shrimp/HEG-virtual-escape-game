@@ -1,0 +1,20 @@
+{
+  "intro": {
+    "part1": [
+      "Printemps 2022, l'entreprise Innokask qui a développé de nouveaux casques connectés tient à se présenter au concours international Innosport, moteur de l'innovation dans le domaine du sport.",
+      "À quelques jours du concours… MALHEUR! Innokask est remise en cause par le groupe multinational Legranmechan qui proclame avoir lui-même créé le casque connecté.",
+      "Pour prouver sa bonne foi, Innokask doit présenter au jury d'Innosport, et à Legranmechan, son premier prototype : le golden kask !",
+      "Or celui-ci est resté dans les anciens vestiaires de gym du créateur principal, un petit suisse (premier diplômé du Master Innokick d'ailleurs…).",
+      "Le temps presse, l'Innokicker doit donc retourner chercher son golden kask mais le chemin est semé d'embuches et, comme si cela ne suffisait pas, il apprend que les agents envoyés par Legranmechan sont à sa poursuite ! Ils ne doivent surtout pas mettre la main sur le précieux casque !"
+    ],
+    "part2": [
+      "Vous allez vous mettre dans la peau du petit suisse, ce brave premier Innokicker, et partir à la recherche du golden kask.",
+      "Dans une oreillette, vos collègues de chez Innokask vont vous guider au mieux…",
+      "Instructions pratiques",
+      "Au cours de votre parcours, lorsque vous passerez votre souris sur l'écran, vous verrez :",
+      "Des <u>zones bleues</u> → elles indiquent des <u>objets à ramasser</u>. Vous pourrez placer certains objets dans votre inventaire (et oui un Innokicker digne de ce nom ne part jamais sans son Innosak)",
+      "Des <u>zones vertes</u> → elles indiquent des <u>objets à observer de plus près</u> ou un passage vers d'autres salles",
+      "Si vous vous sentez bloqué à certains moments, pas de panique! Vos collègues dans l'oreillette seront là pour vous aider!"
+    ]
+  }
+}

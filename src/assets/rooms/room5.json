@@ -1,84 +1,88 @@
 {
-    "name":"room5",
-    "background":"/src/assets/rooms/img/room_4/view/room_4-salle_de_gym.jpg",
-    "riddle":{
-        "question":"Encore une porte verrouillée par un code à cinq chiffres!",
-        "answer":"41583",
-        "congratulation":["Pour connaitre le montant des créances des clients, on prend le chiffre d'affaire de l'année, on déduit le montant des encaissements de l'année et on ajoute ce montant au montant des créances de l'année dernière.","Le chiffre d'affaires de l'année 2022 devrait atteindre CHF 221'444 et on prévoit d'encaisser CHF 179'861.", "Ainsi, les clients qui n'auront pas encore payé en N seront enregistrés dans les créances clients pour un montant de : 221'444 (chiffre d'affaires) – 179'861 (encaissements) + 0 (créances clients au 31.12.N-1) = 41'583.", "On peut contrôler ce montant en se disant que ce sont 30% des ventes de novembre et 60% des ventes de décembre qui seront payées en N+1 = 30% x 37'350 + 60% x 50'630 = 41'583."]
-    },
-    "areas":[
-        {
-            "name":"Maillot 83",
-            "class":"item",
-            "takeable":true,
-            "image":"/src/assets/rooms/img/room_4/items/room_4-maillot_83.png",
-            "image_zoom":"/src/assets/rooms/img/room_4/items/room_4-maillot_83.png",
-            "x":9,
-            "y":36,
-            "width":9,
-            "height":16
-        },
-        {
-            "name":"Maillot 8",
-            "description":"Quelqu'un pourrait lancer une machine? Pouah...",
-            "class":"item",
-            "takeable":false,
-            "image":"/src/assets/rooms/img/room_4/items/room_4-maillot_8.png",
-            "x":22,
-            "y":38,
-            "width":9,
-            "height":16
-        },
-        {
-            "name":"Maillot 32",
-            "description":"Quelqu'un pourrait lancer une machine? Pouah...",
-            "class":"item",
-            "takeable":false,
-            "image":"/src/assets/rooms/img/room_4/items/room_4-maillot_32.png",
-            "x":37,
-            "y":37,
-            "width":9,
-            "height":16
-        },
-        {
-            "name":"Un panneau d'affichage",
-            "description":"Si j'avais un stylo, je pourrais y gribouiller quelque chose...",
-            "class":"item",
-            "takeable":false,
-            "x":47,
-            "y":36,
-            "width":11,
-            "height":15
-        },
-        {
-            "name":"Porte",
-            "class":"zone riddle",
-            "x":65,
-            "y":36,
-            "width":11,
-            "height":26
-        },
-        {
-            "name":"Un panneau d'affichage ",
-            "class":"item",
-            "takeable":false,
-            "image":"/src/assets/rooms/img/room_4/items/room_4-panneau_affichage.png",
-            "image_zoom":"/src/assets/rooms/img/room_4/items/room_4-panneau_affichage-zoom.png",
-            "x":86,
-            "y":38,
-            "width":13,
-            "height":15
-        },
-        {
-            "name":"Une horloge",
-            "description":"L'horloge indique 14h30. Nous sommes le 31 décembre 2022.",
-            "takeable":false,
-            "class":"item",
-            "x":69,
-            "y":15,
-            "width":5,
-            "height":7
-        }
+  "name": "room5",
+  "background": "/src/assets/rooms/img/room_4/view/room_4-salle_de_gym.jpg",
+  "riddle": {
+    "question": "Encore une porte verrouillée par un code à cinq chiffres!",
+    "answer": "41583",
+    "congratulation": [
+      "Pour connaitre le montant des créances des clients, on prend le chiffre d'affaire de l'année, on déduit le montant des encaissements de l'année et on ajoute ce montant au montant des créances de l'année dernière.",
+      "Le chiffre d'affaires de l'année 2022 devrait atteindre CHF 221'444 et on prévoit d'encaisser CHF 179'861.",
+      "Ainsi, les clients qui n'auront pas encore payé en N seront enregistrés dans les créances clients pour un montant de : 221'444 (chiffre d'affaires) – 179'861 (encaissements) + 0 (créances clients au 31.12.N-1) = 41'583.",
+      "On peut contrôler ce montant en se disant que ce sont 30% des ventes de novembre et 60% des ventes de décembre qui seront payées en N+1 = 30% x 37'350 + 60% x 50'630 = 41'583."
     ]
-
+  },
+  "areas": [
+    {
+      "name": "Maillot 83",
+      "class": "item",
+      "takeable": true,
+      "image": "/src/assets/rooms/img/room_4/items/room_4-maillot_83.png",
+      "image_zoom": "/src/assets/rooms/img/room_4/items/room_4-maillot_83.png",
+      "x": 9,
+      "y": 36,
+      "width": 9,
+      "height": 16
+    },
+    {
+      "name": "Maillot 8",
+      "description": "Quelqu'un pourrait lancer une machine? Pouah...",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_4/items/room_4-maillot_8.png",
+      "x": 22,
+      "y": 38,
+      "width": 9,
+      "height": 16
+    },
+    {
+      "name": "Maillot 32",
+      "description": "Quelqu'un pourrait lancer une machine? Pouah...",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_4/items/room_4-maillot_32.png",
+      "x": 37,
+      "y": 37,
+      "width": 9,
+      "height": 16
+    },
+    {
+      "name": "Un panneau d'affichage",
+      "description": "Si j'avais un stylo, je pourrais y gribouiller quelque chose...",
+      "class": "item",
+      "takeable": false,
+      "x": 47,
+      "y": 36,
+      "width": 11,
+      "height": 15
+    },
+    {
+      "name": "Porte",
+      "class": "zone riddle",
+      "x": 65,
+      "y": 36,
+      "width": 11,
+      "height": 26
+    },
+    {
+      "name": "Un panneau d'affichage ",
+      "class": "item",
+      "takeable": false,
+      "image": "/src/assets/rooms/img/room_4/items/room_4-panneau_affichage.png",
+      "image_zoom": "/src/assets/rooms/img/room_4/items/room_4-panneau_affichage-zoom.png",
+      "x": 86,
+      "y": 38,
+      "width": 13,
+      "height": 15
+    },
+    {
+      "name": "Une horloge",
+      "description": "L'horloge indique 14h30. Nous sommes le 31 décembre 2022.",
+      "takeable": false,
+      "class": "item",
+      "x": 69,
+      "y": 15,
+      "width": 5,
+      "height": 7
+    }
+  ]
 }

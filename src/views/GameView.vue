@@ -5,6 +5,7 @@ import RiddleWindow from "@/components/RiddleWindow.vue";
 import ContextualWindow from "@/components/ContextualWindow.vue";
 import TimerWindow from "@/components/TimerWindow.vue";
 import GameIntro from "@/components/GameIntro.vue";
+import { supabase } from "@/services/supabase.js";
 
 export default {
   components: {
@@ -109,22 +110,33 @@ export default {
      * Load the room data from the json file, and set the roomComputedStyle
      * when the image is loaded
      */
-    async loadRoom(room) {
-      if (room === "") room = "room1";
-      //Récupération du fichier JSON
-      fetch(`/src/assets/rooms/${room}.json`)
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          //Sauvegarde la Room
-          this.currentRoom = data;
-          //Charge la vue en effectuant un clone de la currentRoom
-          this.currentView = JSON.parse(JSON.stringify(this.currentRoom));
-          this.saveProgress();
-        });
-    },
+    async loadRoom(roomName) {
+      this.loadingRoom = true;
+      this.errorLoadingRoom = null;
 
+      const name = roomName || this.rooms[0];
+
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          `getRoom?name=${name}`
+        );
+
+        if (error) {
+          console.error("Erreur Supabase Function:", error.message);
+          this.errorLoadingRoom = error.message;
+          return;
+        }
+
+        this.currentRoom = data;
+        this.currentView = JSON.parse(JSON.stringify(data));
+        this.saveProgress();
+      } catch (e) {
+        console.error("Erreur réseau :", e.message);
+        this.errorLoadingRoom = "Erreur réseau. Veuillez réessayer.";
+      } finally {
+        this.loadingRoom = false;
+      }
+    },
     /**
      * Permet de sauvegarder la progression de l'utilisateur
      */
@@ -532,7 +544,12 @@ export default {
 <template>
   <header>
     <h1>Escape Game Finance</h1>
-    <a href="src/assets/misc/innokask_consignes.pdf" target="_blank" style="color:#0d6efd">Consignes du jeu</a>
+    <a
+      href="src/assets/misc/innokask_consignes.pdf"
+      target="_blank"
+      style="color: #0d6efd"
+      >Consignes du jeu</a
+    >
     <button @click="backToMenu">Quitter la partie</button>
   </header>
 
