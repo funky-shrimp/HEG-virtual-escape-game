@@ -6,6 +6,7 @@ import ContextualWindow from "@/components/ContextualWindow.vue";
 import TimerWindow from "@/components/TimerWindow.vue";
 import GameIntro from "@/components/GameIntro.vue";
 import { supabase } from "@/services/supabase.js";
+import { ref } from "vue";
 
 export default {
   components: {
@@ -19,6 +20,8 @@ export default {
 
   data() {
     return {
+      latestConsignesUrl: "", // Variable pour stocker l'URL du dernier fichier consignes
+
       rooms: ["room1", "room2", "room3", "room4", "room5", "room6"], // List des salles
       currentRoom: {}, //Salle actuelle
       currentView: {}, //Vue actuelle
@@ -39,6 +42,12 @@ export default {
     return {
       inventory: this.inventory,
     };
+  },
+
+  mounted() {
+    //console.log("🔔 mounted() appelé");
+    this.loadProgress();
+    this.loadConsignesUrl();
   },
 
   watch: {
@@ -98,6 +107,19 @@ export default {
   computed: {},
 
   methods: {
+    /**
+     * Récupère l’URL publique du PDF depuis Supabase Storage
+     */
+    async loadConsignesUrl() {
+      const { data, error } = supabase.storage
+        .from("consignes")
+        .getPublicUrl("innokask_consignes.pdf");
+      if (error) {
+        console.error("Impossible de récupérer l’URL publique :", error);
+      } else {
+        this.latestConsignesUrl = data.publicUrl;
+      }
+    },
     formattedTime(time) {
       const minutes = Math.floor(time / 60);
       const seconds = this.timeRemaining % 60;
@@ -113,26 +135,39 @@ export default {
     async loadRoom(roomName) {
       this.loadingRoom = true;
       this.errorLoadingRoom = null;
-
       const name = roomName || this.rooms[0];
 
       try {
+        // 1) Appel de la function pour récupérer la room
         const { data, error } = await supabase.functions.invoke(
           `getRoom?name=${name}`
         );
+        if (error) throw error;
 
-        if (error) {
-          console.error("Erreur Supabase Function:", error.message);
-          this.errorLoadingRoom = error.message;
-          return;
-        }
+        // 2) Clone du JSON pour ne pas muter l'original
+        const room = JSON.parse(JSON.stringify(data));
 
-        this.currentRoom = data;
-        this.currentView = JSON.parse(JSON.stringify(data));
+        // 3) Fonction récursive pour mettre à jour tous les liens "Consignes"
+        const patchConsignesLink = (areas) => {
+          areas.forEach((a) => {
+            if (a.link && a.name === "Consignes") {
+              a.link.url = this.latestConsignesUrl;
+            }
+            if (a.innerRoom && a.innerRoom.areas) {
+              patchConsignesLink(a.innerRoom.areas);
+            }
+          });
+        };
+
+        patchConsignesLink(room.areas);
+
+        // 4) Affecte à currentRoom / currentView
+        this.currentRoom = room;
+        this.currentView = JSON.parse(JSON.stringify(room));
         this.saveProgress();
       } catch (e) {
-        console.error("Erreur réseau :", e.message);
-        this.errorLoadingRoom = "Erreur réseau. Veuillez réessayer.";
+        console.error("Erreur lors du chargement de la room :", e);
+        this.errorLoadingRoom = e.message || "Erreur inconnue";
       } finally {
         this.loadingRoom = false;
       }
@@ -534,22 +569,15 @@ export default {
       }
     },
   },
-
-  mounted() {
-    this.loadProgress();
-  },
 };
 </script>
 
 <template>
   <header>
     <h1>Escape Game Finance</h1>
-    <a
-      href="src/assets/misc/innokask_consignes.pdf"
-      target="_blank"
-      style="color: #0d6efd"
-      >Consignes du jeu</a
-    >
+    <a :href="latestConsignesUrl" target="_blank" style="color: #0d6efd">
+      Consignes du jeu
+    </a>
     <button @click="backToMenu">Quitter la partie</button>
   </header>
 

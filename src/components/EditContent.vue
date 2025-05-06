@@ -142,7 +142,7 @@ const solde2022 = computed(
 // --- Chargement des données au montage ---
 onMounted(async () => {
   try {
-    console.log("Chargement des données depuis la base de données...");
+    //console.log("Chargement des données depuis la base de données...");
 
     // Charger le contenu de la page 2
     const { data: contentData, error: contentError } = await supabase
@@ -154,7 +154,7 @@ onMounted(async () => {
     if (contentError) {
       console.error("Erreur lors du chargement de pdf_content :", contentError);
     } else {
-      console.log("Contenu de la page 2 chargé :", contentData);
+      //console.log("Contenu de la page 2 chargé :", contentData);
       page2Title.value = contentData.title;
       page2Body.value = contentData.body;
       prixUnitaire.value = contentData.price || 83; // Charger le prix ou utiliser 83 par défaut
@@ -168,7 +168,7 @@ onMounted(async () => {
     if (tableError) {
       console.error("Erreur lors du chargement de pdf_table :", tableError);
     } else {
-      console.log("Données du tableau chargées :", tableDataResult);
+      //console.log("Données du tableau chargées :", tableDataResult);
       tableData.value = tableDataResult.map((row) => ({
         mois: row.mois,
         prevision2022: row.prevision_2022,
@@ -184,7 +184,7 @@ onMounted(async () => {
     if (roomsError) {
       console.error("Erreur lors du chargement des rooms :", roomsError);
     } else {
-      console.log("Données des rooms chargées :", roomsData);
+      //console.log("Données des rooms chargées :", roomsData);
       rooms.value = roomsData;
     }
   } catch (err) {
@@ -194,10 +194,10 @@ onMounted(async () => {
 
 async function saveChanges() {
   try {
-    console.log("Enregistrement des modifications dans la base de données...");
-    console.log("Titre à mettre à jour :", page2Title.value);
-    console.log("Prix à mettre à jour :", prixUnitaire.value);
-    console.log("Corps à mettre à jour :", page2Body.value);
+    //console.log("Enregistrement des modifications dans la base de données...");
+    //console.log("Titre à mettre à jour :", page2Title.value);
+    //console.log("Prix à mettre à jour :", prixUnitaire.value);
+    //console.log("Corps à mettre à jour :", page2Body.value);
 
     const { error: contentError } = await supabase
       .from("pdf_content")
@@ -219,7 +219,7 @@ async function saveChanges() {
       );
     }
 
-    console.log("Modifications enregistrées avec succès !");
+    //console.log("Modifications enregistrées avec succès !");
   } catch (err) {
     console.error("Erreur inattendue lors de l'enregistrement :", err);
     alert("Une erreur inattendue s'est produite.");
@@ -254,7 +254,7 @@ async function updateRoomRiddles() {
 
 // --- Génération du PDF et mise à jour des données ---
 async function generatePDFAndUpdateRooms() {
-  console.log("Début de la génération du PDF...");
+  //console.log("Début de la génération du PDF...");
   await saveChanges();
 
   const doc = new jsPDF({
@@ -267,7 +267,7 @@ async function generatePDFAndUpdateRooms() {
 
   try {
     // 1) Mise à jour des valeurs dans la base de données
-    console.log("Mise à jour des valeurs dans la base de données...");
+    //console.log("Mise à jour des valeurs dans la base de données...");
     const { error: contentError } = await supabase
       .from("pdf_content")
       .update({
@@ -306,10 +306,10 @@ async function generatePDFAndUpdateRooms() {
       );
     }
 
-    console.log("Données mises à jour avec succès dans la base de données.");
+    //console.log("Données mises à jour avec succès dans la base de données.");
 
     // 2) Génération du PDF
-    console.log("Génération du PDF...");
+    //console.log("Génération du PDF...");
     doc.setFontSize(32);
     doc.text("Escape Game Innokask", W / 2, 60, { align: "center" });
 
@@ -369,7 +369,7 @@ async function generatePDFAndUpdateRooms() {
       styles: { fontSize: 10 },
     });
 
-    console.log("PDF généré avec succès.");
+    //console.log("PDF généré avec succès.");
 
     // 3) Upload du PDF
     const pdfBlob = doc.output("blob");
@@ -384,7 +384,7 @@ async function generatePDFAndUpdateRooms() {
 
     await updateRoomRiddles(); // Met à jour les énigmes des rooms
 
-    console.log("PDF uploadé avec succès.");
+    //console.log("PDF uploadé avec succès.");
     alert("PDF généré et données mises à jour avec succès !");
   } catch (err) {
     console.error("Erreur inattendue :", err);

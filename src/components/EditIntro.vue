@@ -43,16 +43,16 @@ function destroyQuill() {
 }
 
 async function loadIntro() {
-  console.log("🔄 loadIntro()");
+  //console.log("🔄 loadIntro()");
   const { data, error } = await supabase
     .from("game_intro")
     .select("id, content")
     .single();
-  console.log("→ loadIntro response:", { data, error });
+  //console.log("→ loadIntro response:", { data, error });
   if (error || !data) return;
 
   introId.value = data.id;
-  console.log("→ introId loaded:", introId.value);
+  //console.log("→ introId loaded:", introId.value);
 
   try {
     const parsed = JSON.parse(data.content);
@@ -111,7 +111,7 @@ async function saveIntro() {
     return;
   }
 
-  console.log("✔ Enregistré en base :", status, data.content);
+  //console.log("✔ Enregistré en base :", status, data.content);
 
   // 5) on recolle directement dans Quill pour voir le résultat
   try {
