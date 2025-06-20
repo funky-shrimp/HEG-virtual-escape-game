@@ -17,6 +17,16 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/GameView.vue"),
     },
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("../views/Admin/index.vue"), // Charge la page d'administration
+    },
+    {
+      path: "/admin/dashboard",
+      name: "dashboard",
+      component: () => import("../views/Admin/Dashboard.vue"), // Charge le tableau de bord
+    },
   ],
 });
 
