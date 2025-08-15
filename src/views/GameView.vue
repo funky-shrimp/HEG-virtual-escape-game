@@ -120,6 +120,7 @@ export default {
         this.latestConsignesUrl = data.publicUrl;
       }
     },
+    
     formattedTime(time) {
       const minutes = Math.floor(time / 60);
       const seconds = this.timeRemaining % 60;
